@@ -1,0 +1,12 @@
+Googlec::Export::Transmitters::BulkTransmitter.class_eval do
+end
+
+
+sc = ScheduledItem.find(84877)
+sc.data['adwordsLabels'] = ['queen']
+sc.save
+sc.update(status: 1, force_transmit: true) // set transmit_ready
+
+change cm sidekiq stread to 0 (so not using sidekiq)
+SchedulerWorker.new.perform(43)  // https://staging-channel.commerceconnect.co/channels/15/jobs/43/edit
+Googlec::Export::Transmitters::BulkTransmitter.new.perform(15, 2443, "product_catalog", true) // get params from sidekiq dashboard

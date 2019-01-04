@@ -1,0 +1,1 @@
+AttributeValue.select(:product_id, :attribute_definition_id).group(:product_id, :attribute_definition_id).having("count(*) > 1").all

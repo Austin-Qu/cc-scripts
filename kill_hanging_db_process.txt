@@ -1,0 +1,56 @@
+The authenticity of host 'ec2-13-54-8-212.ap-southeast-2.compute.amazonaws.com (13.54.8.212)' can't be established.
+ECDSA key fingerprint is SHA256:87gjZFVSkaHIDBjOR1P4fs72icI/utfA2Q4vflsTzh8.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'ec2-13-54-8-212.ap-southeast-2.compute.amazonaws.com,13.54.8.212' (ECDSA) to the list of known hosts.
+Last login: Wed Jul  4 09:48:49 UTC 2018 from 14.202.234.190 on pts/2
+Welcome to Engine Yard Cloud!
+
+SQL database:
+cd /db # your attached DB volume
+
+PostgreSQL:
+sudo su -
+tail -f /db/postgresql/9.4/data/pg_log/* # logs
+pg_top -d channel_manager
+
+
+deploy@ip-172-31-33-108 ~ $ psql -d channel_manager
+psql (9.4.12)
+Type "help" for help.
+
+channel_manager=> /x
+channel_manager-> ;
+ERROR:  syntax error at or near "/"
+LINE 1: /x
+        ^
+channel_manager=> \x
+Expanded display is on.
+channel_manager=> select * from pg_stat_activity where query like '%channel_items%';
+channel_manager=> select * from pg_stat_activity where query like '%channel_items%' and application_name like '%rails%';
+-[ RECORD 1 ]----+--------------------------------------------------------------------------------------
+datid            | 16385
+datname          | channel_manager
+pid              | 54805
+usesysid         | 16384
+usename          | deploy
+application_name | bin/rails
+client_addr      | 172.31.134.102
+client_hostname  |
+client_port      | 50433
+backend_start    | 2018-07-06 06:27:38.775527+00
+xact_start       | 2018-07-06 06:40:46.226957+00
+query_start      | 2018-07-06 06:40:46.2271+00
+state_change     | 2018-07-06 06:40:46.2271+00
+waiting          | f
+state            | active
+backend_xid      |
+backend_xmin     | 902060256
+query            | SELECT "channel_items".* FROM "channel_items" WHERE "channel_items"."channel_id" = $1
+
+channel_manager=> select pg_terminate_backend(54805);
+-[ RECORD 1 ]--------+--
+pg_terminate_backend | t
+
+channel_manager=> packet_write_wait: Connection to 13.54.8.212 port 22: Broken pipe
+
+[Process completed]

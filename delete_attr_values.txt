@@ -1,0 +1,26 @@
+5] pry(main)> data = ""
+=> ""
+[6] pry(main)> open('avalue.txt') do |f|
+[6] pry(main)*   data = f.read
+[6] pry(main)* end
+[7] pry(main)> data
+[8] pry(main)> vlist = JSON.parse data
+
+
+
+vlist = []
+
+AttributeValue.includes(:product, :attribute_definition).all.each do |v|
+  next if v.product.blank?
+  pc =  v.product.product_class
+  ad =  v.attribute_definition
+  pcg = ProductClassAttributeDefinition.where(attribute_definition_id: ad.id).pluck(:product_class_id)
+  unless pcg.include?(pc.id)
+    vlist << v.id
+    puts '*'
+  end
+end
+
+File.open("attr_value_ids.txt", "w+") do |f|
+  f.puts(vlist)
+end

@@ -1,0 +1,2 @@
+c.scheduled_items.includes(:error_logs, :channel_item).references(:error_logs, :channel_items).where(status: 5, scheduled_type: 'product').where('error_logs.message like ?','%Auction ended%').where('channel_items.external_status': 1).size
+=> 93

@@ -1,0 +1,13 @@
+[14] pry(main)> channel.channel_items.where(status:0,external_status:1,export_status:6).count
+=> 86
+[15] pry(main)> cids=channel.channel_items.where(status:0,external_status:1,export_status:6).select{|x|x.scheduled_items.of_active.first.error_logs.where(code:'515').count > 0 rescue false}
+[16] pry(main)> cids.count
+=> 17
+[17] pry(main)> ids=cids.collect(&:id)
+=> [284816, 283055, 360448, 286746, 360465, 360442, 290330, 357685, 352530, 397386, 379004, 288402, 287899, 292668, 291394, 352532, 360496]
+[18] pry(main)> ChannelItem.where(channel:channel, id: ids).count
+=> 17
+[19] pry(main)> ChannelItem.where(channel:channel, id: ids).update_all(version_id:nil)
+=> 17
+[20] pry(main)> s=channel.scheduler
+[21] pry(main)> ChannelItem.where(id:ids).each{|ci|s.schedule(ci)}

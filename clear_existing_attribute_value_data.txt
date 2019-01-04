@@ -1,0 +1,9 @@
+For single language tenants
+
+[73] pry(main)> AttributeValue.where(attribute_definition_id: 215).select{|a|a.data.present?}.collect(&:id)
+=> [1401708, 1652632, 1653914, 1654064, 1652513]
+[74] pry(main)> arr=_
+=> [1401708, 1652632, 1653914, 1654064, 1652513]
+[75] pry(main)> AttributeValue.where(id: arr).find_each {|v| v.translations.last.update(txt_value: nil)}
+=> nil
+

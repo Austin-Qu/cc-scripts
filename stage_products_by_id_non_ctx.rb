@@ -1,0 +1,1 @@
+FusionFactory::Adaptors::SkuAdaptor.import_by_product_ids(1, ids)

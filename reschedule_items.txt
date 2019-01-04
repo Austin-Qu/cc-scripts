@@ -1,0 +1,36 @@
+[42] pry(main)> pp c.scheduled_items.includes(:error_logs, :channel_item).references(:error_logs, :channel_items).where(status: 5, scheduled_type: 'product').where('error_logs.message like ?','%Auction ended%').where('channel_items.external_status': 1, 'channel_items.status': 1).pluck(:data).map {|e| e['Item']['ItemID'].to_i}
+[142205566150, 142004981500, 162451861328, 142004845779]
+=> [142205566150, 142004981500, 162451861328, 142004845779]
+[43] pry(main)>
+[44] pry(main)>
+[45] pry(main)>
+[46] pry(main)>
+[47] pry(main)>
+[48] pry(main)> c.id
+=> 47
+[49] pry(main)> c.name
+=> "eBay - Styletread"
+[50] pry(main)> c.channel_items.where(status:0,external_status:1,export_status:6).count
+=> 174
+[51] pry(main)> c.channel_items.where(status:0,external_status:1,export_status:6).find_each{|ci|
+[51] pry(main)> ids=[]
+=> []
+[52] pry(main)> c.channel_items.where(status:0,external_status:1,export_status:6).find_each{|ci|
+[52] pry(main)* ids<<ci.id if ci.scheduled_items.of_active.first.error_logs.where(code:'197').count>0 rescue nil}
+=> nil
+[53] pry(main)> ids.count
+=> 1
+[54] pry(main)> ids=[]
+=> []
+[55] pry(main)> c.channel_items.where(status:0,external_status:1,export_status:6).find_each{|ci|
+[55] pry(main)* ids<<ci.id if ci.scheduled_items.of_active.first.error_logs.where(code:'291').count>0 rescue nil}
+=> nil
+[56] pry(main)> ids.count
+=> 89
+[57] pry(main)>
+[58] pry(main)> c.channel_items.where(id:ids).update_all(external_status:0)
+=> 89
+[59] pry(main)> s=c.scheduler
+[60] pry(main)>
+[61] pry(main)>
+[62] pry(main)> c.channel_items.where(id:ids).each{|c|s.schedule(c)}

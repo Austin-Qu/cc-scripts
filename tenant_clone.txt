@@ -1,0 +1,14 @@
+pg_dump -x -O --inserts -n frankdemo5 product_manager|gzip > /tmp/src_pm_dbdump.gz
+gunzip -c /tmp/src_pm_dbdump_2611.gz > /tmp/src_pm_dbdump_2611     # didn't change tenant name, keep frankdemo5
+psql -d product_manager < /tmp/src_pm_dbdump_2611
+
+pg_dump -x -O --inserts -n frankdemo5 channel_manager|gzip > /tmp/src_cm_dbdump.gz
+
+pg_dump -x -O --inserts -n frankdemo5 order_manager|gzip > /tmp/src_om_dbdump.gz
+
+
+ADMIN CENTRAL
+
+Tenant.new(name: 'frankdemo5', client_id:1, sidekiq_weight:1, status:1, tenant_type: 0, product_manager_sidekiq_max_threads:0, channel_manager_sidekiq_max_threads:0, order_manager_sidekiq_max_threads:0, version: version).save
+tenant = Tenant.where(name: 'frankdemo5').first
+data_hash = {tid: tenant.id, name: tenant.name, sidekiq_weight: tenant.sidekiq_weight, status: tenant.status, tenant_type: tenant.tenant_type, sidekiq_max_threads:0, version: tenant.version}

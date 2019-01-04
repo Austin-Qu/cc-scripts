@@ -1,0 +1,56 @@
+Product.where(id: pids).find_each(batch_size:32){|p|
+  ::FusionFactory::Versioning.delay_versioning do
+  PriceItem.delete
+  end
+}
+
+PriceItem.where(id: [280007, 280006, 279996, 279995, 279971, 279967, 279962, 279955, 279950, 279943]).find_each(batch_size:32) {|p|
+  ::FusionFactory::Versioning.delay_versioning do
+    p.destroy
+  end
+}
+
+[25] pry(main)> pi_ids_0 = pis.order("id ASC").limit(15000).pluck(:id)
+[26] pry(main)> pi_ids_0.first
+=> 200946
+[27] pry(main)> pi_ids_0.last
+=> 215945
+[28] pry(main)> pi_ids_1 = pis.order("id ASC").offset(15000).limit(15000).pluck(:id)
+[29] pry(main)> pi_ids_1.first
+=> 215946
+[30] pry(main)> pi_ids_1.last
+=> 230945
+[31] pry(main)> pi_ids_2 = pis.order("id ASC").offset(30000).limit(15000).pluck(:id)
+[32] pry(main)> pi_ids_2.first
+=> 230946
+[33] pry(main)> pi_ids_2.last
+=> 245945
+[34] pry(main)> pi_ids_3 = pis.order("id ASC").offset(45000).limit(15000).pluck(:id)
+[35] pry(main)> pi_ids_3.first
+=> 245946
+[36] pry(main)> pi_ids_3.last
+=> 260946
+[37] pry(main)> pi_ids_4 = pis.order("id ASC").offset(60000).limit(15000).pluck(:id)
+[38] pry(main)> pi_ids_4.last
+=> 275946
+[39] pry(main)> pi_ids_4.first
+=> 260947
+[40] pry(main)> pi_ids_5 = pis.order("id ASC").offset(75000).limit(15000).pluck(:id)
+[41] pry(main)> pi_ids_5.size
+=> 4810
+[42] pry(main)> pi_ids_5.first
+=> 275947
+[43] pry(main)> pi_ids_5.last
+=> 280766
+[44] pry(main)> ct=0
+=> 0
+[45] pry(main)> total=15000
+=> 15000
+
+121085 
+200904
+
+
+[46] pry(main)> PriceItem.where(id: [200946..215945]).find_each(batch_size: 50) {|p|
+[46] pry(main)*   p.destroy
+[46] pry(main)* printf "\r ====================================Destroyed #{ct+=1}/#{total} items.."}
