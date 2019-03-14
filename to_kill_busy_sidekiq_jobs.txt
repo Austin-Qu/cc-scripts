@@ -1,0 +1,9 @@
+
+use GUI "Stop All" button to stop all instances for staging
+
+otherwise, go to the server on which that job is running
+
+# set 0 thread for production first, no need for staging
+
+sudo monit stop all -g channel_manager_sidekiq
+sudo monit start all -g channel_manager_sidekiq

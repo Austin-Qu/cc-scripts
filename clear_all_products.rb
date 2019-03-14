@@ -12,10 +12,15 @@ SkuDataDependency.module_eval do
     nil
   end
 end
- 
+
+# arr = [...]
 total = Product.count
 cnt=0
-Product.find_each(batch_size:50){|p|
-  p.destroy
+Product.where(id: arr).find_each(batch_size:50){|p|
+  begin
+    p.destroy
+  rescue ActiveRecord::InvalidForeignKey
+    ProductDependentDatum.where(product_id: p.id).destroy_all
+  end
   printf "\r Destroyed #{cnt+=1}/#{total} products.."
 }

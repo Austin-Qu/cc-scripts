@@ -13,6 +13,16 @@ arr.each {|code|
   end 
 }
 
+cis.find_each(batch_size: 50) do |ci|
+  ci.update(status: 'inactive')
+  s.schedule(ci)
+end
+
+# cis.find_each(batch_size: 50) do |ci|
+#   ci.update(status: 'active')
+#   s.schedule(ci)
+# end
+
 # Kick off the eBay transmit Job
 
 
